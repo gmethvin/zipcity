@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<title>ZIP code autocomplete test</title>
+<link rel="stylesheet" type="text/css" href="css/jquery.autocomplete.css">
+<script src="js/jquery.js" type="text/javascript"></script>
+<script src="js/jquery.autocomplete.js" type="text/javascript"></script>
+<style type="text/css">
+
+.ac_city { font-size: smaller; padding: 0 0 0 1em; }
+.ac_zip { }
+
+</style>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    $("#zip").autocomplete("zip_json.pl", {
+        minChars: 3,
+        selectFirst: true,
+        matchSubset: true,
+        width: 200,
+        scrollHeight: 300,
+        max: 1024,
+        dataType: 'json',
+        extraParams: {
+            zip: function () { return $("#zip").val(); } 
+        },
+        parse: function (data) {
+            var a = [];
+            for(var i = 0;i < data.length; i++)
+                a.push({ data: data[i],
+                         value: data[i].zip,
+                         result: data[i].zip
+                       });
+            return a;
+        },
+        formatItem: function (item) {
+            return "<span class='ac_zip'>" + item.zip + "</span>" +
+                              "<span class='ac_city'>" + item.city +
+                              ", " + item.state + "</span>";
+        },
+    });
+    $("#zip").result(function (event, item) {
+        $("#city").val(item.city);
+        $("#state").val(item.state);
+    });
+});
+
+</script>
+</head>
+<body>
+  <p>Enter a zip code and it will start autocompleting with 3 or more
+  chars. Select a zip code from the list and it will fill in the city
+  and state.</p>
+  <form>
+    <label> ZIP: <input name="zip" id="zip" type="text" size="5" maxlength="5"></label>
+    <label> City: <input name="city" id="city" type="text" size="20"></label>
+    <label> State: <input name="state" id="state" type="text" size="2" maxlength="2"></label></p>
+  </form>
+
+</body>
+</html>
