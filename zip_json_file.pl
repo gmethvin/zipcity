@@ -2,6 +2,8 @@
 #
 # Zip to city and city to zip json script.
 #
+# This version of the script uses only flat files and no database.
+#
 # Copyright (c) 2009 Greg Methvin
 #
 # See LICENSE for license
@@ -10,10 +12,10 @@ use strict;
 use JSON::XS;
 
 # File with zip codes.
-use constant ZC_ALL => "zipcodes_all";
+use constant ZC_ALL => "zipcode_files/zipcodes_all";
 
 # Prefix for two-digit range zip code files.
-use constant ZC_PREFIX => "zipcodes/";
+use constant ZC_PREFIX => "zipcode_files/";
 
 # Print an empty json array and die.
 sub error {
