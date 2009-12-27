@@ -44,9 +44,10 @@ for (split '&', $ENV{'QUERY_STRING'}) {
     $pz = $v if $n eq "zip";
 }
 
-# Check for the proper zip and state format; the zip can be a prefix,
-# so 5 or fewer digits and the state must be a state code.
-$pz =~ /^d{0,5}$/ || $ps =~ /^(\a{2}|)$/
+# Check for the proper zip, city and state format: the zip can be a
+# prefix, so 5 or fewer digits, the city is any word char and the
+# state must be a two-letter state code.
+$pz =~ /^\d{0,5}$/ && $pc =~ /^\w*$/ && $ps =~ /^(\w{2})?$/
     or error;
 
 # See if we can use a prefix file, so we can get a faster lookup. This

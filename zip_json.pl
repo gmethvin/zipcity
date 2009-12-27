@@ -28,7 +28,7 @@ for (split '&', $ENV{'QUERY_STRING'}) {
     # Get the parameters; convert param names to lowercase and values
     # to uppercase and check if they are city, state, or zip, storing
     # them in the appropriate variables.
-    my ($n, $v) = split '=';
+    my ($n, $v) = split /=/;
     $v =~ tr/+/ /;
     $v =~ s/%(..)/pack("C", hex($1))/eg;
     ($n, $v) = (lc $n, uc $v);
@@ -37,9 +37,10 @@ for (split '&', $ENV{'QUERY_STRING'}) {
     $pz = $v if $n eq "zip";
 }
 
-# Check for the proper zip and state format; the zip can be a prefix,
-# so 5 or fewer digits and the state must be a state code.
-$pz =~ /^d{0,5}$/ || $pc =~ /^\w*/ || $ps =~ /^(\a{2}|)$/
+# Check for the proper zip, city and state format: the zip can be a
+# prefix, so 5 or fewer digits, the city is any word char and the
+# state must be a two-letter state code.
+$pz =~ /^\d{0,5}$/ && $pc =~ /^\w*$/ && $ps =~ /^(\w{2})?$/
     or error;
 
 # Make blank city and state match any.
