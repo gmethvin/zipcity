@@ -8,7 +8,12 @@
 
 use strict;
 use JSON::XS;
-use DBI;
+
+# File with zip codes.
+use constant ZC_ALL => "zipcodes_all";
+
+# Prefix for two-digit range zip code files.
+use constant ZC_PREFIX => "zipcodes/";
 
 # Print an empty json array and die.
 sub error {
@@ -39,24 +44,36 @@ for (split '&', $ENV{'QUERY_STRING'}) {
 
 # Check for the proper zip and state format; the zip can be a prefix,
 # so 5 or fewer digits and the state must be a state code.
-$pz =~ /^d{0,5}$/ || $pc =~ /^\w*/ || $ps =~ /^(\a{2}|)$/
+$pz =~ /^d{0,5}$/ || $ps =~ /^(\a{2}|)$/
     or error;
 
-# Make blank city and state match any.
-$pc or $pc = "%";
-$ps or $ps = "%";
+# See if we can use a prefix file, so we can get a faster lookup. This
+# gives us an advantage in the usual case since a zip query is the
+# most common and we need to search a smaller file. Also, the
+# filesystem should cache the files for commonly-searched zip ranges.
+if ($pz =~ /^\d{2}/) {
+    open ZC, ZC_PREFIX . substr($pz, 0, 2)
+        or error;
+} else {
+    open ZC, ZC_ALL;
+}
 
-# Connect to the database.
-my $dbh = DBI->connect("dbi:SQLite:dbname=zipdb","","");
+# An array of hash references which we'll jsonize in the end.
+my @data;
 
-# Prepare the statement.
-my $sth = $dbh->prepare(
-    "SELECT zip, city, state FROM zipcodes WHERE " .
-    "zip LIKE ? AND city LIKE ? AND state LIKE ?");
-$sth->bind_param(1, $pz . "%");
-$sth->bind_param(2, $pc);
-$sth->bind_param(3, $ps);
-$sth->execute;
+for (<ZC>) {
+    # Parse out the line and check for a match.
+
+    /(\d{5}):([\w\s]+), (\w{2})/ or next;
+    my ($city, $state, $zip) = map { uc } ($2, $3, $1);
+    next unless $zip =~ /^$pz/ &&
+        (!$pc || $pc eq $city) && (!$ps || $ps eq $state);
+    push @data, { city => $city,
+                  state => $state,
+                  zip => $zip };
+}
+
+close ZC;
 
 # Print out the json.
-print encode_json $sth->fetchall_arrayref({});
+print encode_json \@data;
