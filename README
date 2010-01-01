@@ -18,6 +18,6 @@ match. Currently the city and state are set up to be exact
 zip code.
 
 For those who do not wish to use sqlite, there is a version using flat
-files as well, with the zip codes split up into 100 files named by the
-first 2 digits of the zip code. This lets us search for any particular
-zip code or set of zip codes much faster than using the whole file.
+files, with the zip codes split up into 100 files named by the first 2
+digits of the zip code. This lets us search for any particular zip
+code or set of zip codes much faster than using the whole file.
