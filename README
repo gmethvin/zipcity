@@ -1,0 +1,23 @@
+
+Zip code info script
+
+By Greg Methvin (greg@methvin.net)
+
+Please see the file LICENSE for license information.
+
+This is a script to obtain the city and state for a given zip code,
+and autocomplete the zip code on a form. It utilizes a zip code sqlite
+database and a basic perl CGI script to query the zip codes. For the
+autocompletion, it uses the jQuery library and the autocomplete plugin
+from http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete/.
+
+The perl script supports querying by any combination of city, state
+and zip code to find the set of city, state and zip codes that
+match. Currently the city and state are set up to be exact
+(case-insensitive) matches and the zip must be a prefix of the actual
+zip code.
+
+For those who do not wish to use sqlite, there is a version using flat
+files as well, with the zip codes split up into 100 files named by the
+first 2 digits of the zip code. This lets us search for any particular
+zip code or set of zip codes much faster than using the whole file.
