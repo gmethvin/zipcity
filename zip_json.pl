@@ -37,6 +37,9 @@ for (split '&', $ENV{'QUERY_STRING'}) {
     $pz = $v if $n eq "zip";
 }
 
+# Allow "city, state" as a possible input
+$pc =~ s/^(\w+)\s*\,\s*(\w{2})/$1/ and ($pc, $ps) = ($1, $ps || $2);
+
 # Check for the proper zip, city and state format: the zip can be a
 # prefix, so 5 or fewer digits, the city is any word char and the
 # state must be a two-letter state code.
