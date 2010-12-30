@@ -22,8 +22,8 @@ sub error {
     print "[]" and die;
 }
 
-print "Content-Type: text/plain;charset=utf-8\r\n\r\n";
-#print "Content-Type: application/json;charset=utf-8\r\n\r\n";
+#print "Content-Type: text/plain;charset=utf-8\r\n\r\n";
+print "Content-Type: application/json;charset=utf-8\r\n\r\n";
 
 $ENV{'REQUEST_METHOD'} =~ /GET/i
     or error;
