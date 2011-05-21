@@ -3,7 +3,7 @@
 <head>
 <title>ZIP code autocomplete test</title>
 <link rel="stylesheet" type="text/css" href="css/jquery.autocomplete.css">
-<script src="js/jquery.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
 <script src="js/jquery.autocomplete.js" type="text/javascript"></script>
 <style type="text/css">
 
@@ -18,7 +18,7 @@ body { font-family: Helvetica, Arial, sans-serif; }
 <script type="text/javascript">
 
 $(document).ready(function() {
-    $("#zip").autocomplete("zip_json.pl", {
+    $("#zip, #city").autocomplete("zip_json.pl", {
         minChars: 2,
         selectFirst: true,
         matchSubset: true,
@@ -27,7 +27,13 @@ $(document).ready(function() {
         max: 1024,
         dataType: 'json',
         extraParams: {
-            zip: function () { return $("#zip").val(); } 
+            zip: function () {
+                return $("#zip:focus").val();
+            },
+            city: function () {
+                var c = $("#city:focus").val();
+                return c && c + '%'
+            }
         },
         parse: function (data) {
             var a = [];
@@ -44,7 +50,8 @@ $(document).ready(function() {
                               ", " + item.state + "</span>";
         },
     });
-    $("#zip").result(function (event, item) {
+    $("#zip, #city").result(function (event, item) {
+        $("#zip").val(item.zip);
         $("#city").val(item.city);
         $("#state").val(item.state);
     });
@@ -53,9 +60,9 @@ $(document).ready(function() {
 </script>
 </head>
 <body>
-  <p>Enter a zip code and it will start autocompleting with 2 or more
-  chars. Select a zip code from the list and it will fill in the city
-  and state.</p>
+  <p>Enter a zip code or city and it will start autocompleting with 2
+  or more chars. Select an item from the list and it will fill in the
+  zip, city and state.</p>
   <form>
     <label> ZIP: <input name="zip" id="zip" type="text" size="5" maxlength="5"></label>
     <label> City: <input name="city" id="city" type="text" size="20"></label>
