@@ -37,13 +37,13 @@ for (split '&', $ENV{'QUERY_STRING'}) {
 }
 
 # Allow "city, state" as a possible input for the city
-$pc =~ s/^([\w\s\%]+)\s*\,\s*(\%*(\w\%*){2})$/$1/
+$pc =~ s/^([\w\s\%]+)\s*\,\s*(\%*(\w\%*){0,2})$/$1/
     and ($pc, $ps) = ($1, $ps || $2);
 
 # Check for the proper zip, city and state format: the zip can be a
 # prefix, so 5 or fewer digits, the city is any word char (and % for
 # wildcard) and the state must be a two-letter state code (and %)).
-$pz =~ /^\d{0,5}$/ && $pc =~ /^[\w\s\%]*$/ && $ps =~ /^(\%*(\w\%*){2})?$/
+$pz =~ /^\d{0,5}$/ && $pc =~ /^[\w\s\%]*$/ && $ps =~ /^(\%*(\w\%*){0,2})?$/
     or error;
 
 # Make blank city and state match any.
